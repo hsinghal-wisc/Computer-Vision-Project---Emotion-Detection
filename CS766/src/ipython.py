@@ -12,16 +12,14 @@ import pandas as pd
 
 set3 = brewer2mpl.get_map('Set3', 'qualitative', 6).mpl_colors
 
-# load json and create model
 json_file = open('data/results/model.json','r')
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
-# load weights into model
+
 model.load_weights('data/weights/model.h5')
 
 
-# import public test:
 X_fname = 'data/X_Public.npy'
 y_fname = 'data/Y_Public.npy'
 X = np.load(X_fname)
@@ -31,12 +29,12 @@ y_labels = [np.argmax(lst) for lst in y]
 counts = np.bincount(y_labels)
 labels = ['angry', 'fear', 'happy', 'sad', 'surprise', 'neutral']
 print zip(labels, counts)
-# evaluate model on public test set
+
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 score = model.evaluate(X, y, verbose=0)
 print "model %s: %.2f%%" % (model.metrics_names[1], score[1]*100)
 
-# import private test:
+
 X_fname = 'data/X_Private.npy'
 y_fname = 'data/Y_Private.npy'
 X = np.load(X_fname)
@@ -46,7 +44,7 @@ y_labels = [np.argmax(lst) for lst in y]
 counts = np.bincount(y_labels)
 labels = ['angry', 'fear', 'happy', 'sad', 'surprise', 'neutral']
 print zip(labels, counts)
-# evaluate model on private test set
+
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 score = model.evaluate(X, y, verbose=0)
 print "model %s: %.2f%%" % (model.metrics_names[1], score[1]*100)
@@ -66,18 +64,18 @@ plot_filters(model.layers[0], 8, 4)
 
 import theano
 def plot_interlayer_outputs(input_img, layer_num1, layer_num2, colormaps=False):
-    output_fn = theano.function([model.layers[layer_num1].input], # import theano
+    output_fn = theano.function([model.layers[layer_num1].input],
                                 model.layers[layer_num2].output, allow_input_downcast=True)
-                                im = output_fn(input_img) #filtered image
+                                im = output_fn(input_img)
                                 print im.shape
                                 n_filters = im.shape[1]
                                 fig = plt.figure(figsize=(12,6))
                                 for i in range(n_filters):
                                     ax = fig.add_subplot(n_filters/16,16,i+1)
                                         if colormaps:
-                                            ax.imshow(im[0,i,:,:], cmap='Blues')#seq_colors[i]
+                                            ax.imshow(im[0,i,:,:], cmap='Blues')
                                                 else:
-                                                    ax.imshow(im[0,i,:,:], cmap=matplotlib.cm.gray) #matplotlib.cm.gray
+                                                    ax.imshow(im[0,i,:,:], cmap=matplotlib.cm.gray)
                                                         plt.xticks(np.array([]))
                                                             plt.yticks(np.array([]))
                                                                 plt.tight_layout()
@@ -138,9 +136,9 @@ plot_subjects_with_probs(0, 36, y_prob)
 y_fname1 = 'data/Y_public.npy'
 y_fname3 = 'data/Y_private.npy'
 y_fname2 = 'data/Y_train.npy'
-y_train = np.load(y_fname2) # train
-y_public = np.load(y_fname1) # public
-y_private = np.load(y_fname3) # private
+y_train = np.load(y_fname2)
+y_public = np.load(y_fname1)
+y_private = np.load(y_fname3)
 y_train_labels  = [np.argmax(lst) for lst in y_train]
 y_public_labels = [np.argmax(lst) for lst in y_public]
 y_private_labels = [np.argmax(lst) for lst in y_private]
@@ -173,7 +171,7 @@ plot_distribution(y_train_labels, y_private_labels, \
 
 
 def plot_distribution(y_true, y_pred):
-    ind = np.arange(1.5,7,1)  # the x locations for the groups
+    ind = np.arange(1.5,7,1)
     width = 0.35
     fig, ax = plt.subplots()
     true = ax.bar(ind, np.bincount(y_true), width, color=set3, alpha=1.0)
@@ -201,7 +199,7 @@ def plot_confusion_matrix(y_true, y_pred, cmap=plt.cm.Blues):
     for i in range(0,6):
         for j in range(0,6):
             ax.text(j,i,cm[i,j],va='center', ha='center')
-    # ax.set_title('Confusion Matrix')
+    
     ticks = np.arange(len(labels))
     ax.set_xticks(ticks)
     ax.set_xticklabels(labels, rotation=45)
@@ -235,7 +233,6 @@ def class_accuracy(y_true, y_pred, emotion):
     return float(tp + tn)/sum([tp, fn, fp, tn])
 
 
-# private test set
 for emotion in labels:
     print emotion.upper()
     print '   acc = {}'.format(class_accuracy(y_true, y_pred, emotion))

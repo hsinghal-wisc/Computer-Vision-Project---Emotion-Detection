@@ -5,14 +5,16 @@ import time
 
 starttime = time.asctime(time.localtime(time.time()))
 
-def save_model(json_string, dirpath='../data/results/'):
-    with open(dirpath + starttime +'.txt', 'w') as f:
-        f.write(json_string)
-
 def save_config(config, dirpath='../data/results/'):
     with open(dirpath + 'config_log.txt', 'a') as f:
         f.write(starttime + '\n')
         f.write(str(config) + '\n')
+
+def save_model(json_string, dirpath='../data/results/'):
+    with open(dirpath + starttime +'.txt', 'w') as f:
+        f.write(json_string)
+
+
 
 def save_result(train_val_accuracy, notes, conv_arch, dense,                            dirpath='../data/results/'):
     train_acc = train_val_accuracy['acc']
