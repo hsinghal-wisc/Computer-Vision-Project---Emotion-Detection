@@ -1,3 +1,0 @@
-Step 1: Training is done using deepNN.py, Output is trained.h5 file
-Step 2: ipython.py has the code for displaying, presenting and analysing the results.
-Step 3: meme.py was used to demonstrate the results. We also tried to embed a webcam in our website, so as to produce live results but there were certain issues when integrating javascript and python backend. We have instead embedded a video we made while running code in our system in realtime.
